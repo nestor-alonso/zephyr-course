@@ -1,0 +1,7 @@
+/ {
+	aliases {
+		app-led = &blue_led;		
+	};
+};
+
+
