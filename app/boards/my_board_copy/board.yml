@@ -1,0 +1,6 @@
+board:
+  name: my_board_copy
+  full_name: My Board based on a Copy
+  vendor: nalonso
+  socs:
+    - name: esp32
