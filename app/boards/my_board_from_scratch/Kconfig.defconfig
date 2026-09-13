@@ -1,0 +1,18 @@
+if BOARD_MY_BOARD_FROM_SCRATCH
+
+config ESP32_USE_UNSUPPORTED_REVISION
+	default y
+
+config SERIAL
+	default y
+
+config CONSOLE
+	default y
+
+config UART_CONSOLE
+	default y
+
+config GPIO
+	default y
+
+endif # BOARD_MY_BOARD_FROM_SCRATCH
