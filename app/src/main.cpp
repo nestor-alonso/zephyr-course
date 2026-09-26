@@ -3,6 +3,8 @@
 #include <zephyr/logging/log.h>
 
 #include <zephyr/drivers/sensor.h> 
+#include "our_driver.h" 
+
 
 /* #define SLEEP_TIME_MS 1000 */
 
@@ -21,10 +23,15 @@ namespace {
 	void test(){
 		const struct device* driver = DEVICE_DT_GET(DT_NODELABEL(our_driver0));
 		struct sensor_value val;
+
 		sensor_sample_fetch(driver);
 		k_msleep(500);
 		int ret = sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &val);
 		LOG_INF("Channel ret %d", ret);
+
+                int count = our_driver_bump_counter(driver);
+                LOG_INF("Bump counter returned %d", count);
+
 	}
 }
 
