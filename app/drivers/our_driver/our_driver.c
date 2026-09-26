@@ -61,6 +61,27 @@ int our_driver_bump_counter(const struct device *dev)
         return data->toggle_count;
 }
 
+
+/* Another custom extension, as the previous one only autoincrements, but can't set values*/
+#define OUR_DRIVER_COUNTER_MIN 0
+#define OUR_DRIVER_COUNTER_MAX 100
+
+int our_driver_set_counter(const struct device *dev, int value)
+{
+        struct our_driver_data *data = dev->data;
+
+        if (value < OUR_DRIVER_COUNTER_MIN || value > OUR_DRIVER_COUNTER_MAX) {
+                LOG_ERR("Value %d out of range [%d, %d]",
+                        value, OUR_DRIVER_COUNTER_MIN, OUR_DRIVER_COUNTER_MAX);
+                return -EINVAL;
+        }
+
+        data->toggle_count = value;
+        LOG_INF("Counter set to %d", data->toggle_count);
+        return 0;
+}
+
+
 // Add any other API call to this dict
 
 static DEVICE_API(sensor, api_nalonso) = {

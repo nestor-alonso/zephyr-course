@@ -2,6 +2,9 @@
 #include <zephyr/device.h>
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/shell/shell.h>
+#include <errno.h>
+
+#include "our_driver.h"
 
 static int cmd_sensor_fetch(const struct shell *sh, size_t argc, char **argv)
 {
@@ -50,10 +53,34 @@ static int cmd_sensor_info(const struct shell *sh, size_t argc, char **argv)
         return 0;
 }
 
+static int cmd_sensor_set(const struct shell *sh, size_t argc, char **argv)
+{
+        int err = 0;
+        long value = shell_strtol(argv[1], 10, &err);
+
+        if (err) {
+                shell_error(sh, "Invalid argument: '%s' is not a valid number", argv[1]);
+                return -EINVAL;
+        }
+
+        const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(our_driver0));
+        int ret = our_driver_set_counter(dev, (int)value);
+
+        if (ret < 0) {
+                shell_error(sh, "Value out of range: %ld", value);
+                return ret;
+        }
+
+        shell_print(sh, "Counter set to %ld", value);
+        return 0;
+}
+
 SHELL_STATIC_SUBCMD_SET_CREATE(sub_sensor,
         SHELL_CMD(fetch, NULL, "Fetch a sample from the sensor.", cmd_sensor_fetch),
         SHELL_CMD(read,  NULL, "Read the last fetched channel value.", cmd_sensor_read),
         SHELL_CMD(info,  NULL, "Show device name and ready state.", cmd_sensor_info),
+        SHELL_CMD_ARG(set, NULL, "Set the counter value. Usage: sensor set <value>",
+                      cmd_sensor_set, 2, 0),
         SHELL_SUBCMD_SET_END
 );
 
