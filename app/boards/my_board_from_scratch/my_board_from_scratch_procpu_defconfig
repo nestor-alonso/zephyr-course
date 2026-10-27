@@ -1,0 +1,10 @@
+# Board defaults for my_board_from_scratch, PRO CPU target
+# 2026-10-27
+
+# UART console so the board prints out of the box
+CONFIG_SERIAL=y
+CONFIG_CONSOLE=y
+CONFIG_UART_CONSOLE=y
+
+# GPIO driver for the on-board pins
+CONFIG_GPIO=y
