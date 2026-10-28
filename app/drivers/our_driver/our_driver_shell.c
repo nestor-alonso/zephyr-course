@@ -53,6 +53,8 @@ static int cmd_sensor_info(const struct shell *sh, size_t argc, char **argv)
         return 0;
 }
 
+/* Shell entry for "sensor set": validates input so the user gets a clear
+ * message before anything reaches the driver */
 static int cmd_sensor_set(const struct shell *sh, size_t argc, char **argv)
 {
         int err = 0;
@@ -63,11 +65,18 @@ static int cmd_sensor_set(const struct shell *sh, size_t argc, char **argv)
                 return -EINVAL;
         }
 
+        /* Range check here, before the cast to int can truncate a large long */
+        if (value < OUR_DRIVER_COUNTER_MIN || value > OUR_DRIVER_COUNTER_MAX) {
+                shell_error(sh, "Value out of range: %ld (allowed %d to %d)",
+                            value, OUR_DRIVER_COUNTER_MIN, OUR_DRIVER_COUNTER_MAX);
+                return -EINVAL;
+        }
+
         const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(our_driver0));
         int ret = our_driver_set_counter(dev, (int)value);
 
         if (ret < 0) {
-                shell_error(sh, "Value out of range: %ld", value);
+                shell_error(sh, "Failed to set counter: error %d", ret);
                 return ret;
         }
 

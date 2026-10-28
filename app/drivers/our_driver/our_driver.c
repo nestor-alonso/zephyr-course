@@ -63,8 +63,6 @@ int our_driver_bump_counter(const struct device *dev)
 
 
 /* Another custom extension, as the previous one only autoincrements, but can't set values*/
-#define OUR_DRIVER_COUNTER_MIN 0
-#define OUR_DRIVER_COUNTER_MAX 100
 
 int our_driver_set_counter(const struct device *dev, int value)
 {
